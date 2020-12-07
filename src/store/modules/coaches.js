@@ -1,3 +1,31 @@
+const updateData = async (coach, userId, func) => {
+  const url = `https://vue-http-demo-f1b10.firebaseio.com/coaches/3.json`;
+
+  const response = await fetch(url, {
+    method: "PUT",
+    // ContentType: "application/json",
+    body: JSON.stringify({
+      coach: coach,
+    }),
+  });
+
+  const coachData = await response.json();
+
+  if (!response.ok) {
+    console.log("response (error): ", response);
+  }
+
+  func(coachData);
+};
+
+const loadData = async (func) => {
+  const url = `https://vue-http-demo-f1b10.firebaseio.com/coaches.json`;
+
+  fetch(url)
+    .then((response) => response.json())
+    .then((coachesData) => func(coachesData));
+};
+
 const coachesModule = {
   state() {
     return {
@@ -23,24 +51,39 @@ const coachesModule = {
   },
   mutations: {
     register(state, payload) {
-      const newCoach = payload.value;
+      const newCoach = payload.coach;
       state.coaches.unshift(newCoach);
     },
-    loadCoaches() {},
+    loadCoaches(state, payload) {
+      state.coaches = payload;
+    },
   },
   actions: {
     addCoach(context, payload) {
       const userId = context.rootGetters.userId;
       const newCoach = payload.value;
       newCoach.id = userId;
-      context.commit("register", payload, context);
+
+      updateData(newCoach, context.rootGetters.userId, (data) =>
+        context.commit("register", data)
+      );
+    },
+    loadCoaches(context) {
+      loadData((data) =>
+        context.commit(
+          "loadCoaches",
+          Object.values(data).map((coachData) => coachData.coach)
+        )
+      );
     },
   },
   getters: {
     coaches(state) {
       return state.coaches;
     },
-    isCoach(state, getters, rootState, rootGetter) {},
+    isCoach(_state, getters, _rootState, rootGetters) {
+      return getters.coaches.some((coach) => coach.id === rootGetters.userId);
+    },
   },
 };
 

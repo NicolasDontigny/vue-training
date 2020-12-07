@@ -1,21 +1,25 @@
 <template>
-  <section>
-    <coach-filter @change-filter="setFilters"></coach-filter>
-  </section>
-  <section>
-    <div class="controls">
-      <button>Refresh</button>
-      <router-link to="/register">Register as Coach</router-link>
-    </div>
-    <ul>
-      <coach-item
-        v-for="coach in filteredCoaches"
-        :key="coach"
-        :coach="coach"
-        :activeFilters="activeFilters"
-      ></coach-item>
-    </ul>
-  </section>
+  <div>
+    <section>
+      <coach-filter @change-filter="setFilters"></coach-filter>
+    </section>
+    <section>
+      <div class="controls">
+        <button>Refresh</button>
+        <button v-if="isCoach">Welcome!</button>
+        <router-link to="/register" v-else>Register as Coach</router-link>
+      </div>
+      <ul v-if="!isLoading">
+        <coach-item
+          v-for="coach in filteredCoaches"
+          :key="coach"
+          :coach="coach"
+          :activeFilters="activeFilters"
+        ></coach-item>
+      </ul>
+      <div v-else>LOADING</div>
+    </section>
+  </div>
 </template>
 
 <script>
@@ -44,10 +48,11 @@ export default {
           checked: true,
         },
       ],
+      isLoading: false,
     };
   },
   computed: {
-    ...mapGetters(["coaches"]),
+    ...mapGetters(["coaches", "isCoach"]),
     filtersChecked() {
       return this.activeFilters
         .filter((filter) => filter.checked)
@@ -66,6 +71,18 @@ export default {
     setFilters(updatedFilters) {
       this.activeFilters = updatedFilters;
     },
+    loadCoaches() {
+      this.isLoading = true;
+
+      setTimeout(() => {
+        this.$store
+          .dispatch("loadCoaches")
+          .then(() => (this.isLoading = false));
+      }, 1000);
+    },
+  },
+  created() {
+    this.loadCoaches();
   },
 };
 </script>

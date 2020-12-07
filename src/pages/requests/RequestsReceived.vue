@@ -1,12 +1,14 @@
 <template>
-  <h4>My Requests</h4>
-  <ul>
-    <li v-for="request in myRequests" :key="request.id">
-      <h3>{{ request.title }}</h3>
-      <p>{{ request.message }}</p>
-      <p>Coach: {{ request.coachName }}</p>
-    </li>
-  </ul>
+  <div>
+    <h4>My Requests</h4>
+    <ul>
+      <li v-for="request in myRequests" :key="request.id">
+        <h3>{{ request.title }}</h3>
+        <p>{{ request.message }}</p>
+        <p>Coach: {{ request.coachName }}</p>
+      </li>
+    </ul>
+  </div>
 </template>
 
 <script>

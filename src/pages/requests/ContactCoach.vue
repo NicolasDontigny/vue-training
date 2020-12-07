@@ -1,16 +1,18 @@
 <template>
-  <h4>Contact:</h4>
-  <form @submit.prevent="sendRequest">
-    <div class="form-control">
-      <label for="title">Title</label>
-      <input type="text" id="title" v-model="title" />
-    </div>
-    <div class="form-control">
-      <label for="message">Message</label>
-      <input type="text" id="message" v-model="message" />
-    </div>
-    <button>Send Request</button>
-  </form>
+  <div>
+    <h4>Contact:</h4>
+    <form @submit.prevent="sendRequest">
+      <div class="form-control">
+        <label for="title">Title</label>
+        <input type="text" id="title" v-model="title" />
+      </div>
+      <div class="form-control">
+        <label for="message">Message</label>
+        <input type="text" id="message" v-model="message" />
+      </div>
+      <button>Send Request</button>
+    </form>
+  </div>
 </template>
 
 <script>
@@ -43,6 +45,7 @@ export default {
             id: new Date().toISOString(),
             title: this.title,
             message: this.message,
+            coachId: foundCoach.id,
             coachName: foundCoach
               ? foundCoach.firstName + " " + foundCoach.lastName
               : null,
