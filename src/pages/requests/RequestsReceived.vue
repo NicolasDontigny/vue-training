@@ -18,6 +18,14 @@ export default {
   computed: {
     ...mapGetters(["myRequests"]),
   },
+  methods: {
+    loadRequests() {
+      this.$store.dispatch("loadRequests");
+    },
+  },
+  created() {
+    this.loadRequests();
+  },
 };
 </script>
 

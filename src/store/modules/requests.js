@@ -6,24 +6,37 @@ const requestsModule = {
   },
   mutations: {
     addRequest(state, payload) {
-      state.requests.unshift(payload.value);
+      console.log("addRequest payload: ", payload);
+      state.requests.unshift(payload);
     },
   },
   actions: {
     addRequest(context, payload) {
-      context.commit("addRequest", payload);
+      const userId = context.rootGetters.userId;
+
+      const url = `https://vue-http-demo-f1b10.firebaseio.com/requests/${userId}.json`;
+
+      fetch(url, {
+        method: "POST",
+        body: JSON.stringify(payload.value),
+      })
+        .then((response) => response.json())
+        .then(() => context.commit("addRequest", payload.value));
+    },
+    loadRequests(context) {
+      const token = context.getters.token;
+      const url = `https://vue-http-demo-f1b10.firebaseio.com/requests.json?auth=${token}`;
+
+      fetch(url)
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("data values: ", Object.values(data));
+          context.state.requests = Object.values(data);
+        });
     },
   },
   getters: {
     myRequests(state, _getters, _rootState, rootGetters) {
-      console.log("====================");
-      console.log("state.requests: ", state.requests);
-      console.log("rootGetters: ", rootGetters);
-      console.log(
-        state.requests.filter(
-          (request) => request.coachId === rootGetters.userId
-        )
-      );
       return state.requests.filter(
         (request) => request.coachId === rootGetters.userId
       );

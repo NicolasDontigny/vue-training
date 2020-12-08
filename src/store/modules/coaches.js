@@ -1,5 +1,5 @@
-const updateData = async (coach, userId, func) => {
-  const url = `https://vue-http-demo-f1b10.firebaseio.com/coaches/3.json`;
+const updateData = async (coach, userId, token, func) => {
+  const url = `https://vue-http-demo-f1b10.firebaseio.com/coaches/${userId}.json?auth=${token}`;
 
   const response = await fetch(url, {
     method: "PUT",
@@ -60,12 +60,15 @@ const coachesModule = {
   },
   actions: {
     addCoach(context, payload) {
-      const userId = context.rootGetters.userId;
+      const userId = context.getters.userId;
       const newCoach = payload.value;
       newCoach.id = userId;
 
-      updateData(newCoach, context.rootGetters.userId, (data) =>
-        context.commit("register", data)
+      updateData(
+        newCoach,
+        context.getters.userId,
+        context.getters.token,
+        (data) => context.commit("register", data)
       );
     },
     loadCoaches(context) {

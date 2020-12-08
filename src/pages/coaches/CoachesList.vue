@@ -7,7 +7,14 @@
       <div class="controls">
         <button>Refresh</button>
         <button v-if="isCoach">Welcome!</button>
-        <router-link to="/register" v-else>Register as Coach</router-link>
+        <router-link to="/register" v-else-if="!isCoach && isLoggedIn"
+          >Register as Coach</router-link
+        >
+        <router-link
+          to="/auth?redirect=register"
+          v-else-if="!isCoach && !isLoggedIn"
+          >Login to Register as a Coach</router-link
+        >
       </div>
       <ul v-if="!isLoading">
         <coach-item
@@ -53,6 +60,9 @@ export default {
   },
   computed: {
     ...mapGetters(["coaches", "isCoach"]),
+    isLoggedIn() {
+      return this.$store.getters.isLoggedIn;
+    },
     filtersChecked() {
       return this.activeFilters
         .filter((filter) => filter.checked)

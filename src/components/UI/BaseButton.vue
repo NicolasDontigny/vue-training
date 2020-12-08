@@ -1,8 +1,19 @@
 <template>
-  <button>
+  <button :type="buttonType">
     <slot></slot>
   </button>
 </template>
+
+<script>
+export default {
+  props: ["type"],
+  computed: {
+    buttonType() {
+      return this.type || "submit";
+    },
+  },
+};
+</script>
 
 <style scoped>
 button {

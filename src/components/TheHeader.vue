@@ -9,13 +9,30 @@
         <li>
           <router-link to="/requests">Requests</router-link>
         </li>
+        <li v-if="isLoggedIn">
+          <button @click="logout">Logout</button>
+        </li>
+        <li v-else>
+          <router-link to="/auth">Login</router-link>
+        </li>
       </ul>
     </nav>
   </header>
 </template>
 
 <script>
-export default {};
+export default {
+  computed: {
+    isLoggedIn() {
+      return this.$store.getters.token !== null;
+    },
+  },
+  methods: {
+    logout() {
+      this.$store.dispatch("logout").then(() => this.$router.replace("/auth"));
+    },
+  },
+};
 </script>
 
 <style scoped>
@@ -28,17 +45,22 @@ header {
   align-items: center;
 }
 
-header a {
+header a,
+header button {
   text-decoration: none;
+  background-color: transparent;
   color: #f391e3;
   display: inline-block;
   padding: 0.75rem 1.5rem;
   border: 1px solid transparent;
+  font-size: 16px;
+  cursor: pointer;
 }
 
 a:active,
 a:hover,
-a.router-link-active {
+a.router-link-active,
+button:hover {
   border: 1px solid #f391e3;
 }
 
