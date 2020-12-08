@@ -1,4 +1,4 @@
-const apiKey = "AIzaSyB0cukvIk2aPvYbE3Tt4qw5jwWUaI91cqg";
+const apiKey = process.env.VUE_APP_FIREBASE_API_KEY;
 let timer;
 
 const setLocalStorage = (data, expirationDate) => {
@@ -28,6 +28,7 @@ const authModule = {
   },
   actions: {
     auth(context, payload) {
+      console.log("api key: ", apiKey);
       const modeUrl =
         payload.mode === "login" ? "signInWithPassword" : "signUp";
       const url = `https://identitytoolkit.googleapis.com/v1/accounts:${modeUrl}?key=${apiKey}`;
@@ -70,9 +71,9 @@ const authModule = {
 
       clearTimeout(timer);
 
-      localStorage.remoteItem("token");
-      localStorage.remoteItem("userId");
-      localStorage.remoteItem("expirationDate");
+      localStorage.removeItem("token");
+      localStorage.removeItem("userId");
+      localStorage.removeItem("expirationDate");
     },
     checkIfAuthenticated(context) {
       const token = localStorage.getItem("token");
